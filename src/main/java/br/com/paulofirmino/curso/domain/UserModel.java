@@ -2,57 +2,40 @@ package br.com.paulofirmino.curso.domain;
 
 import java.time.LocalDate;
 
-import javax.validation.constraints.NotNull;
-import javax.validation.constraints.Size;
+import javax.persistence.Column;
+import javax.persistence.Entity;
+import javax.persistence.EnumType;
+import javax.persistence.Enumerated;
+import javax.persistence.GeneratedValue;
+import javax.persistence.GenerationType;
+import javax.persistence.Id;
+import javax.persistence.Table;
 
-import org.hibernate.validator.constraints.NotBlank;
 import org.springframework.format.annotation.DateTimeFormat;
-import org.springframework.format.annotation.DateTimeFormat.ISO;
 
+@Entity
+@Table(name = "users")
 public class UserModel {
 
+	 @Id @GeneratedValue(strategy = GenerationType.IDENTITY)
 	private Long id;
 
-	@NotBlank
-	@Size(min = 3, max = 50)
+	@Column(nullable = false, length = 50)
 	private String name;
 
-	@NotBlank
-	@Size(min = 3, max = 50)
+	@Column(nullable = false, length = 50)
 	private String lastName;
 
-	@NotNull
-	@DateTimeFormat(iso = ISO.DATE)
+	@Column(name = "birthday")
+    @DateTimeFormat(iso = DateTimeFormat.ISO.DATE)
 	private LocalDate birthday;
 
+	@Column(name = "gender")
+    @Enumerated(EnumType.STRING)
 	private GenderType gender;
 
 	public UserModel() {
 		super();
-	}
-
-	public UserModel(Long id, String name, String lastName) {
-		super();
-		this.id = id;
-		this.name = name;
-		this.lastName = lastName;
-	}
-
-	public UserModel(Long id, String name, String lastName, LocalDate birthday) {
-		super();
-		this.id = id;
-		this.name = name;
-		this.lastName = lastName;
-		this.birthday = birthday;
-	}
-
-	public UserModel(Long id, String name, String lastName, LocalDate birthday, GenderType gender) {
-		super();
-		this.id = id;
-		this.name = name;
-		this.lastName = lastName;
-		this.birthday = birthday;
-		this.gender = gender;
 	}
 
 	public Long getId() {
