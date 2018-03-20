@@ -2,6 +2,7 @@ package br.com.paulofirmino.curso.dao;
 
 import java.util.List;
 
+import br.com.paulofirmino.curso.domain.GenderType;
 import br.com.paulofirmino.curso.domain.UserModel;
 
 public interface IUserDao {
@@ -15,4 +16,8 @@ public interface IUserDao {
 	UserModel getId(Long id);
 	
 	List<UserModel> getAll();
+
+	List<UserModel> getByGenderType(GenderType gender);
+
+	List<UserModel> getByName(String name);
 }

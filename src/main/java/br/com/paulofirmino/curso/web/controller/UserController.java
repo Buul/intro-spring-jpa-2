@@ -12,6 +12,7 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.servlet.ModelAndView;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
@@ -25,6 +26,12 @@ public class UserController {
 
 	@Autowired
 	private IUserDao dao;
+	
+	@ModelAttribute("genders")
+	public GenderType[] genderType() {
+		return GenderType.values();
+	}
+	
 
 	@RequestMapping(value = "/all", method = RequestMethod.GET)
 	public ModelAndView listAll(ModelMap model) {
@@ -34,14 +41,12 @@ public class UserController {
 
 	@GetMapping("/add")
 	public String add(@ModelAttribute("user") UserModel user, ModelMap model) {
-		model.addAttribute("genders", GenderType.values());
 		return "/user/add";
 	}
 
 	@PostMapping("/save")
 	public ModelAndView save(@Valid @ModelAttribute("user") UserModel user, BindingResult result,
-			RedirectAttributes attr) {
-		
+			RedirectAttributes attr) {	
 		if (result.hasErrors())
 			return new ModelAndView("/user/add");
 		dao.save(user);
@@ -51,9 +56,26 @@ public class UserController {
 
 	@GetMapping("/get/{id}")
 	public ModelAndView getUserById(@PathVariable("id") Long id, ModelMap model) {
+		
 		UserModel user = dao.getId(id);
 		model.addAttribute("user", user);
 		return new ModelAndView("user/add", model);
+	}
+	
+	@GetMapping("/get/gender")
+	public ModelAndView getUserByGender(@RequestParam(value = "genderType") GenderType gender) {
+		if (gender == null ) {
+			return new ModelAndView("redirect:/user/all");
+		}
+		return new ModelAndView("/user/list", "users", dao.getByGenderType(gender));
+	}
+	
+	@GetMapping("/get/name")
+	public ModelAndView getUserByName(@RequestParam(value = "name") String name) {
+		if (name == null ) {
+			return new ModelAndView("redirect:/user/all");
+		}
+		return new ModelAndView("/user/list", "users", dao.getByName(name));
 	}
 
 	@PostMapping("update")
